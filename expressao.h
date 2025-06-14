@@ -24,6 +24,6 @@ int potencia(int base, int expoente);
 int radiciacao(int numero);
 int seno(int angulo);
 int cosseno(int angulo);
-int resolverPosFix(Pilha *pilha, char expressao[], int tamanho);
+int resolverPosFix(Pilha *pilha, char expressao[]);
 bool TryParse(char n, int *result);
 #endif

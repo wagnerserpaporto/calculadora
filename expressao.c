@@ -35,6 +35,11 @@ int desempilhar(Pilha *pilha)
 {
 
     Node *temp = pilha->topo;
+    if (temp == NULL)
+    {
+        printf("Operacao invalida");
+        return -1;
+    }
     pilha->topo = temp->proximo;
     int valor = temp->valor;
 
@@ -84,11 +89,15 @@ int realizarOperacao(int y, int x, char operador)
     return resultado;
 }
 
-int resolverPosFix(Pilha *pilha, char expressao[], int tamanho)
+int resolverPosFix(Pilha *pilha, char expressao[])
 {
+
+    int tamanho = strlen(expressao);
 
     for (int i = 0; i < tamanho; i++)
     {
+        if (pilha->tamanho == 1)
+            break;
         int numero;
         if (TryParse(expressao[i], &numero))
         {
@@ -102,6 +111,8 @@ int resolverPosFix(Pilha *pilha, char expressao[], int tamanho)
             empilhar(pilha, res);
         }
     }
+
+    return pilha->topo->valor;
 }
 
 int potencia(int base, int expoente)
