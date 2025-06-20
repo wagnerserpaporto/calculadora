@@ -1,16 +1,10 @@
+#include "struct_and_utils.h"
+#include "convertein_posfixa.h"
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-// Estrutura da pilha
-
-typedef struct {
-    char *dados;       // Vetor dinâmico para armazenar os caracteres empilhados
-    int indiceTopo;    // Índice do topo da pilha (última posição com elemento válido)
-} PilhaCar;
-
 //Função para inicializar a pilha vazia
-
 void inicializarPilha(PilhaCar *pilha) {
     pilha->dados = NULL;       // Significa que não tem nenhum elemento
     pilha->indiceTopo = -1;    // Topo -1 para garantir que realmente esteja vazia
@@ -91,11 +85,10 @@ char *lerExpressaoDinamica() {
     return expressao;           // Retorna a string lida
 }
 
-int main() {
-    printf("Digite a Expressao Infixa: ");
+char* recebe_infixa(){
     char *expressaoInfixa = lerExpressaoDinamica();  // Lê a expressão fornecida
 
-    // Aloca espaço para a expressão pós-fixa dobro do tamanho da infixa por segurança, foi do jeito que deu porque parenteses da problema
+    // Aloca espaço para a expressão pós-fixa dobro do tamanho da infixa por segurança, foi do jeito que deu porque parenteses dá problema
     char *expressaoPosfixa = malloc(strlen(expressaoInfixa) * 2 + 1);
     int indiceEntrada, indiceSaida = 0;
 
@@ -112,6 +105,7 @@ int main() {
             (caractereAtual >= 'a' && caractereAtual <= 'z') || // Letras minusculas
             (caractereAtual >= '0' && caractereAtual <= '9')) { // Numeros
             expressaoPosfixa[indiceSaida++] = caractereAtual;
+            expressaoPosfixa[indiceSaida++] =  ' '; //acrescentando os espaços após cada elemento para delimitar a parte
         }
         // Se for parêntese de abertura empilha
         else if (caractereAtual == '(') {
@@ -126,6 +120,7 @@ int main() {
             while (pilhaOperadores.indiceTopo != -1 &&
                    obterPrioridade(pilhaOperadores.dados[pilhaOperadores.indiceTopo]) >= obterPrioridade(caractereAtual)) {
                 expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
+                expressaoPosfixa[indiceSaida++] =  ' '; //acrescentando os espaços após cada elemento para delimitar a parte
             }
             empilharCaractere(&pilhaOperadores, caractereAtual);  // Empilha o operador atual
         }
@@ -135,6 +130,7 @@ int main() {
             while (pilhaOperadores.indiceTopo != -1 &&
                    pilhaOperadores.dados[pilhaOperadores.indiceTopo] != '(') {
                 expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
+                expressaoPosfixa[indiceSaida++] =  ' '; //acrescentando os espaços após cada elemento para delimitar a parte
             }
             // Remove também o '(' da pilha
             if (pilhaOperadores.indiceTopo != -1 &&
@@ -147,6 +143,7 @@ int main() {
     // Após o fim da expressão, desempilha tudo que restou
     while (pilhaOperadores.indiceTopo != -1) {
         expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
+        expressaoPosfixa[indiceSaida++] =  ' '; //acrescentando os espaços após cada elemento para delimitar a parte
     }
 
     expressaoPosfixa[indiceSaida] = '\0';  // Termina a string com zero
@@ -161,8 +158,8 @@ int main() {
     // Libera memória alocada
     liberarPilha(&pilhaOperadores);
     free(expressaoInfixa);
-    free(expressaoPosfixa);
+    //free(expressaoPosfixa);
 
-    return 0;
+    return expressaoPosfixa; //retornando a expressão corrigida para então usar na resolução da expressão que fiz
 }
 
