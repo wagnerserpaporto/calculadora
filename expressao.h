@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#define PI 3.1415
 
 #ifndef EXPRESSAO_H
 #define EXPRESSAO_H
