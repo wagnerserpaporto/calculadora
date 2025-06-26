@@ -43,14 +43,10 @@ double desempilhar(Pilha *pilha) {
 
     free(temp);
     pilha->tamanho--;
-    printf("DEBUG: Desempilhado: %.2f\n", valor);
+    printf(" Desempilhado: %.2f\n", valor);
     return valor;
 }
 
-/*int peek(Pilha *pilha) //essa equivale a consutarTopo
-{
-    return pilha->topo;
-}*/
 double consultarTopo(Pilha *pilha) {
     if (pilha->topo == NULL) {
         printf("Pilha vazia!\n");
@@ -162,15 +158,15 @@ int seno(int angulo) {
 }
 
 int cosseno(int angulo) {
-    float resultado = 1;
-    float termo = 1;
-    int n = 1;
-    for (int i = 1; i <= 10; i++) {
-        termo *= -1 * angulo * angulo / ((2 * n - 1) * (2 * n));
-        resultado += termo;
-        n++;
-    }
-    return resultado;
+	float resultado = 1;
+	float termo = 1;
+	int n = 1;
+	for (int i = 1; i <= 10; i++) {
+		termo *= -1 * angulo * angulo / ((2 * n - 1) * (2 * n));
+		resultado += termo;
+		n++;
+	}
+	return resultado;
 }
 
 bool TryParse(char n, int *result) {
@@ -182,15 +178,7 @@ bool TryParse(char n, int *result) {
     return false;
 }
 
-/*void mostrarPilha(Pilha* p) {
-    Node* atual = p->topo;
-    printf("Topo ");
-    while (atual != NULL) {
-        printf("%d ", atual->valor);
-        atual = atual->valor;
-    }
-    printf("Base\n");
-}*/
+
 //arquivo Natanael, resolvendo RPN
 double resolveRPN(char *expressao) {
     //char input[100];
@@ -200,11 +188,6 @@ double resolveRPN(char *expressao) {
 
     Pilha *prato = criar_pilha();
 
-    /*printf("Digite a expressC#o RPN: ");
-    fgets(input, sizeof(input), stdin);
-    input[strcspn(input, "\n")] = 0;
-    //printf("tamanho da entrada: %d.\n", strlen(input));
-    strcpy(input_copy, input);*/
     // Copia a expressão para uma cópia mutável, pois strtok modifica a string.
     // Garanta que input_copy tenha espaço suficiente.
     if (strlen(expressao) >= sizeof(input_copy)) {
@@ -238,24 +221,24 @@ double resolveRPN(char *expressao) {
                 }
             }
             if (operacao_binaria) {
-                printf("DEBUG: Tamanho da pilha antes de desempilhar: %d\n", prato->tamanho);
+                //printf("DEBUG: Tamanho da pilha antes de desempilhar: %d\n", prato->tamanho);
                 num1 = desempilhar(prato);
-                printf("DEBUG: Tamanho da pilha depois do primeiro desempilhar: %d\n", prato->tamanho);
+                //printf("DEBUG: Tamanho da pilha depois do primeiro desempilhar: %d\n", prato->tamanho);
                 num2 = desempilhar(prato);
-                printf("DEBUG: Tamanho da pilha depois do segundo desempilhar: %d\n", prato->tamanho);
+                //printf("DEBUG: Tamanho da pilha depois do segundo desempilhar: %d\n", prato->tamanho);
 
                 switch ((char) token[0]) {
                     case '+':
                         result = num2 + num1;
-                        printf("DEBUG: %.2f + %.2f = %.2f\n", num2, num1, result);
+                        printf(" %.2f + %.2f = %.2f\n", num2, num1, result);
                         break;
                     case '-':
                         result = num2 - num1;
-                        printf("DEBUG: %.2f - %.2f = %.2f\n", num2, num1, result);
+                        printf(" %.2f - %.2f = %.2f\n", num2, num1, result);
                         break;
                     case '*':
                         result = num2 * num1;
-                        printf("DEBUG: %.2f * %.2f = %.2f\n", num2, num1, result);
+                        printf(" %.2f * %.2f = %.2f\n", num2, num1, result);
                         break;
                     case '/':
                         if (num1 == 0) {
@@ -264,36 +247,39 @@ double resolveRPN(char *expressao) {
                             return NAN; // Retorna NAN para erro
                         }
                         result = num2 / num1;
-                        printf("DEBUG: %.2f / %.2f = %.2f\n", num2, num1, result);
+                        printf(" %.2f / %.2f = %.2f\n", num2, num1, result);
                         break;
                     case '^': //potenciação
                         result = pow(num2, num1);
-                        printf("DEBUG: %.2f ^ %.2f = %.2f\n", num2, num1, result);
+                        printf(" %.2f ^ %.2f = %.2f\n", num2, num1, result);
                         break;
                 }
                 empilhar(prato, result);
             } else {
                 double unico = desempilhar(prato);
                 if (strcmp(token, "cos") == 0) {
-                    result = cos(unico);
-                    printf("DEBUG: cos(%.2f) = %.2f\n", unico, result);
+					//converte pra radianos antes de calcular
+					result = cos(unico * PI / 180.0);
+                    printf(" cos(%.2f) = %.2f\n", unico, result);
                 } else if (strcmp(token, "sen") == 0) {
-                    result = sin(unico);
-                    printf("DEBUG: sin(%.2f) = %.2f\n", unico, result);
+					//converte pra radianos antes de calcular
+					result = sin(unico * PI / 180.0);
+                    //result = sin(unico);
+                    printf(" sin(%.2f) = %.2f\n", unico, result);
                 } else if (strcmp(token, "log") == 0) {
                     if (unico <= 0) {
                         printf("Erro: Log de número <= 0!\n");
                         return NAN;
                     }
-                    result = log(unico); // log natural (base e)
-                    printf("DEBUG: log(%.2f) = %.2f\n", unico, result);
+                    result = log10(unico); // log na base 10
+                    printf(" log(%.2f) = %.2f\n", unico, result);
                 } else if (strcmp(token, "sqrt") == 0) {
                     if (unico < 0) {
                         printf("Erro: Raiz de número negativo!\n");
                         return NAN;
                     }
                     result = sqrt(unico);
-                    printf("DEBUG: sqrt(%.2f) = %.2f\n", unico, result);
+                    printf(" sqrt(%.2f) = %.2f\n", unico, result);
                 } else {
                     printf("Erro: Funcao desconhecida '%s'\n", token);
                     return NAN;
@@ -425,50 +411,6 @@ char *recebe_infixa() {
 	PilhaCar pilhaOperadores;
 	inicializarPilha(&pilhaOperadores);
 	
-	// Percorre a expressão elemento por elemento
-	/*for (indiceEntrada = 0; expressaoInfixa[indiceEntrada] != '\0'; indiceEntrada++) {
-	char caractereAtual = expressaoInfixa[indiceEntrada];
-	
-	// // Verifica se o elemento inserido e letra ou numero ou operador
-	if ((caractereAtual >= 'A' && caractereAtual <= 'Z') || // Letras maiúsculas
-	(caractereAtual >= 'a' && caractereAtual <= 'z') || // Letras minusculas
-	(caractereAtual >= '0' && caractereAtual <= '9')) { // Numeros
-	expressaoPosfixa[indiceSaida++] = caractereAtual;
-	expressaoPosfixa[indiceSaida++] =  ' '; //acrescentando os espaços após cada elemento para delimitar a parte
-	}
-	// Se for parêntese de abertura empilha
-	else if (caractereAtual == '(') {
-	empilharCaractere(&pilhaOperadores, caractereAtual);
-	}
-	// Se for operador (+, -, *, /, ^)
-	//antes de empilhar esse novo operador deve se garantir que nenhum operador de prioridade maior ou igual
-	//esteja no topo da pilha se tiver, ele deve ser desempilhado e enviado para o topo primeiro.
-	else if (caractereAtual == '+' || caractereAtual == '-' ||
-	caractereAtual == '*' || caractereAtual == '/' ||
-	caractereAtual == '^') {
-	while (pilhaOperadores.indiceTopo != -1 &&
-	obterPrioridade(pilhaOperadores.dados[pilhaOperadores.indiceTopo]) >= obterPrioridade(caractereAtual)) {
-	expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
-	expressaoPosfixa[indiceSaida++] =  ' '; //acrescentando os espaços após cada elemento para delimitar a parte
-	}
-	empilharCaractere(&pilhaOperadores, caractereAtual);  // Empilha o operador atual
-	}
-	// Se for parêntese de fechamento
-	else if (caractereAtual == ')') {
-	// Desempilha até encontrar o parêntese de abertura
-	while (pilhaOperadores.indiceTopo != -1 &&
-	pilhaOperadores.dados[pilhaOperadores.indiceTopo] != '(') {
-	expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
-	expressaoPosfixa[indiceSaida++] =  ' '; //acrescentando os espaços após cada elemento para delimitar a parte
-	}
-	// Remove também o '(' da pilha
-	if (pilhaOperadores.indiceTopo != -1 &&
-	pilhaOperadores.dados[pilhaOperadores.indiceTopo] == '(') {
-	desempilharCaractere(&pilhaOperadores);
-	}
-	}
-	}*/
-	
 	int i = 0;
 	while (expressaoInfixa[i] != '\0') {
 		char c = expressaoInfixa[i];
@@ -556,60 +498,86 @@ char *recebe_infixa() {
 	return expressaoPosfixa; //retornando a expressão corrigida para então usar na resolução da expressão que fiz
 }
 
-//Recebe expressão pós-fixada e devolve expressão infixada
+//recebe expressão pós-fixada e devolve expressão infixada
 
-char* recebe_posfixa(char* expressaoPosfixa){
+char* recebe_posfixa(char* expressaoPosfixa) {
 	PilhaStr pilha; 
 	inicializarPilhaString(&pilha);
 	
 	for (int i = 0; expressaoPosfixa[i] != '\0'; ) {
 		
 		if (expressaoPosfixa[i] == ' ') {
+			//ignora os espaços
 			i++;
 			continue;
 		}
 		
-		// função da ctype "isdigit()" checa pra ver se é um digito de 0-9 , também checa por possíveis '-' ou '.' pra ver se é de ponto flutuante
+		// confere pra ver se são números , utilizando a função isdigit() do ctype
 		if (isdigit(expressaoPosfixa[i]) || 
 			(expressaoPosfixa[i] == '-' && isdigit(expressaoPosfixa[i+1])) || 
 			(expressaoPosfixa[i] == '.' && isdigit(expressaoPosfixa[i+1]))) {
 			
 			char *start = &expressaoPosfixa[i];
 			char *end;
-			strtod(start, &end); //vai até o final do número identificado
+			strtod(start, &end);
 			
-			int len = end - start; // mede o tamanho do número em caracteres
-			char *num = malloc(len + 1);
-			strncpy(num, start, len);
-			num[len] = '\0';
+			int tam = end - start;
+			char *num = malloc(tam + 1);
+			strncpy(num, start, tam);
+			num[tam] = '\0';
 			
 			empilharString(&pilha, num);
-			//mensagem de debug opcional
-			//printf("numero empilhado: %s\n", num);
+			free(num);
 			
-			i += len; // move o i pra o tamanho do número, se o número for 4.6 por exemplo , move 3 espaços
+			i += tam;
 		} else {
-			//essa parte monta a equação infixada entre parênteses
-			char *dir = desempilharString(&pilha);
-			char *esq = desempilharString(&pilha);
-			
-			//alloca memória igual a os parenteses e os numeros
-			char *expr = malloc(strlen(esq) + strlen(dir) + 4);
-			sprintf(expr, "(%s%c%s)", esq, expressaoPosfixa[i], dir);
-			
-			free(esq);
-			free(dir);
-			
-			//mensagem de debug opcional
-			//printf("expressao empilhada: %s\n", expr);
-			
-			//devolve a string montada pra pilha
-			empilharString(&pilha, expr);
-			
-			i++; 
+			// primeiramente checa se é log cos sqrt ou sen
+			//usando strcmp()
+			if (strncmp(&expressaoPosfixa[i], "cos", 3) == 0) {
+				char *arg = desempilharString(&pilha);
+				char *expr = malloc(strlen(arg) + 5);
+				sprintf(expr, "cos(%s)", arg);
+				free(arg);
+				empilharString(&pilha, expr);
+				i += 3;
+			} else if (strncmp(&expressaoPosfixa[i], "log", 3) == 0) {
+				char *arg = desempilharString(&pilha);
+				char *expr = malloc(strlen(arg) + 5);
+				sprintf(expr, "log(%s)", arg);
+				free(arg);
+				empilharString(&pilha, expr);
+				i += 3;
+			} else if (strncmp(&expressaoPosfixa[i], "sen", 3) == 0) {
+				char *arg = desempilharString(&pilha);
+				char *expr = malloc(strlen(arg) + 5);
+				sprintf(expr, "sen(%s)", arg);
+				free(arg);
+				empilharString(&pilha, expr);
+				i += 3;
+			} else if (strncmp(&expressaoPosfixa[i], "sqrt", 4) == 0) {
+				char *arg = desempilharString(&pilha);
+				char *expr = malloc(strlen(arg) + 6);
+				sprintf(expr, "sqrt(%s)", arg);
+				free(arg);
+				empilharString(&pilha, expr);
+				i += 4;
+			} else {
+				//confere operadores binários
+				char *dir = desempilharString(&pilha);
+				char *esq = desempilharString(&pilha);
+				
+				char *expr = malloc(strlen(esq) + strlen(dir) + 4);
+				sprintf(expr, "(%s%c%s)", esq, expressaoPosfixa[i], dir);
+				
+				//libera memória temporária
+				free(esq);
+				free(dir);
+				
+				empilharString(&pilha, expr);
+				i++;
+			}
 		}
 	}
-	
 	
 	char *resultado = desempilharString(&pilha);
 	return resultado;
