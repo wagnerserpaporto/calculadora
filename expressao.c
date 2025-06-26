@@ -6,155 +6,155 @@
 #include <string.h>
 
 Pilha *criar_pilha() {
-    Pilha *pilha = (Pilha *) malloc(sizeof(Pilha));
-    if (pilha == NULL) {
-        printf("Erro ao alocar memória para a pilha.\n");
-        return NULL;
-    }
-    pilha->topo = NULL;
-    pilha->tamanho = 0;
-    return pilha;
+	Pilha *pilha = (Pilha *) malloc(sizeof(Pilha));
+	if (pilha == NULL) {
+		printf("Erro ao alocar memória para a pilha.\n");
+		return NULL;
+	}
+	pilha->topo = NULL;
+	pilha->tamanho = 0;
+	return pilha;
 }
 
 void empilhar(Pilha *pilha, double valor) {
-    //void empilhar(Pilha *pilha, int valor)
-    Node *novo_node = malloc(sizeof(Node));
-
-    if (!novo_node) {
-        printf("Falha ao alocar memória para novo node");
-        return;
-    }
-
-    novo_node->valor = valor;
-    novo_node->proximo = pilha->topo;
-    pilha->topo = novo_node;
-    pilha->tamanho++;
+	//void empilhar(Pilha *pilha, int valor)
+	Node *novo_node = malloc(sizeof(Node));
+	
+	if (!novo_node) {
+		printf("Falha ao alocar memória para novo node");
+		return;
+	}
+	
+	novo_node->valor = valor;
+	novo_node->proximo = pilha->topo;
+	pilha->topo = novo_node;
+	pilha->tamanho++;
 }
 
 double desempilhar(Pilha *pilha) {
-    //int desempilhar(Pilha *pilha)
-    Node *temp = pilha->topo;
-    if (temp == NULL) {
-        printf("Operacao invalida");
-        return -1;
-    }
-    pilha->topo = temp->proximo;
-    double valor = temp->valor;
-
-    free(temp);
-    pilha->tamanho--;
-    printf(" Desempilhado: %.2f\n", valor);
-    return valor;
+	//int desempilhar(Pilha *pilha)
+	Node *temp = pilha->topo;
+	if (temp == NULL) {
+		printf("Operacao invalida");
+		return -1;
+	}
+	pilha->topo = temp->proximo;
+	double valor = temp->valor;
+	
+	free(temp);
+	pilha->tamanho--;
+	printf(" Desempilhado: %.2f\n", valor);
+	return valor;
 }
 
 double consultarTopo(Pilha *pilha) {
-    if (pilha->topo == NULL) {
-        printf("Pilha vazia!\n");
-        return -1;
-    }
-    return pilha->topo->valor; //return pilha->topo->valor;
+	if (pilha->topo == NULL) {
+		printf("Pilha vazia!\n");
+		return -1;
+	}
+	return pilha->topo->valor; //return pilha->topo->valor;
 }
 
 int estaVazia(Pilha *pilha) {
-    if (pilha->topo == NULL) {
-        return 1;
-    }
-    return 0;
+	if (pilha->topo == NULL) {
+		return 1;
+	}
+	return 0;
 }
 
 int tamanhoPilha(Pilha *pilha) {
-    return pilha->tamanho;
+	return pilha->tamanho;
 }
 
 void liberarPilha2(Pilha *p) {
-    while (!estaVazia(p)) {
-        desempilhar(p);
-    }
-    free(p);
+	while (!estaVazia(p)) {
+		desempilhar(p);
+	}
+	free(p);
 }
 
 int realizarOperacao(int y, int x, char operador) {
-    int resultado;
-    switch (operador) {
-        case '+':
-            resultado = y + x;
-            break;
-        case '-':
-            resultado = y - x;
-            break;
-        case '*':
-            resultado = y * x;
-            break;
-        case '/':
-            resultado = y / x;
-            break;
-        case '^':
-            resultado = potencia(y, x);
-            break;
-        case 'rad':
-            resultado = radiciacao(y);
-            break;
-        case 'sen':
-            resultado = seno(y);
-            break;
-        case 'cos':
-            resultado = cosseno(y);
-            break;
-        default:
-            resultado = 0;
-            break;
-    }
-    return resultado;
+	int resultado;
+	switch (operador) {
+	case '+':
+		resultado = y + x;
+		break;
+	case '-':
+		resultado = y - x;
+		break;
+	case '*':
+		resultado = y * x;
+		break;
+	case '/':
+		resultado = y / x;
+		break;
+	case '^':
+		resultado = potencia(y, x);
+		break;
+	case 'rad':
+		resultado = radiciacao(y);
+		break;
+	case 'sen':
+		resultado = seno(y);
+		break;
+	case 'cos':
+		resultado = cosseno(y);
+		break;
+	default:
+		resultado = 0;
+		break;
+	}
+	return resultado;
 }
 
 int resolverPosFix(Pilha *pilha, char expressao[]) {
-    int tamanho = strlen(expressao);
-
-    for (int i = 0; i < tamanho; i++) {
-        if (pilha->tamanho == 1)
-            break;
-        int numero;
-        if (TryParse(expressao[i], &numero)) {
-            empilhar(pilha, numero);
-        } else {
-            int x = desempilhar(pilha);
-            int y = desempilhar(pilha);
-            int res = realizarOperacao(y, x, expressao[i]);
-            empilhar(pilha, res);
-        }
-    }
-
-    return pilha->topo->valor; //return pilha->topo->valor;
+	int tamanho = strlen(expressao);
+	
+	for (int i = 0; i < tamanho; i++) {
+		if (pilha->tamanho == 1)
+			break;
+		int numero;
+		if (TryParse(expressao[i], &numero)) {
+			empilhar(pilha, numero);
+		} else {
+			int x = desempilhar(pilha);
+			int y = desempilhar(pilha);
+			int res = realizarOperacao(y, x, expressao[i]);
+			empilhar(pilha, res);
+		}
+	}
+	
+	return pilha->topo->valor; //return pilha->topo->valor;
 }
 
 int potencia(int base, int expoente) {
-    int resultado = 1;
-    for (int i = 0; i < expoente; i++) {
-        resultado *= base;
-    }
-    return resultado;
+	int resultado = 1;
+	for (int i = 0; i < expoente; i++) {
+		resultado *= base;
+	}
+	return resultado;
 }
 
 int radiciacao(int numero) {
-    float raiz = numero / 2;
-    float temp = 0;
-    while (raiz != temp) {
-        temp = raiz;
-        raiz = (numero / temp + temp) / 2;
-    }
-    return raiz;
+	float raiz = numero / 2;
+	float temp = 0;
+	while (raiz != temp) {
+		temp = raiz;
+		raiz = (numero / temp + temp) / 2;
+	}
+	return raiz;
 }
 
 int seno(int angulo) {
-    float resultado = angulo;
-    float termo = angulo;
-    int n = 1;
-    for (int i = 1; i <= 10; i++) {
-        termo *= -1 * angulo * angulo / ((2 * n) * (2 * n + 1));
-        resultado += termo;
-        n++;
-    }
-    return resultado;
+	float resultado = angulo;
+	float termo = angulo;
+	int n = 1;
+	for (int i = 1; i <= 10; i++) {
+		termo *= -1 * angulo * angulo / ((2 * n) * (2 * n + 1));
+		resultado += termo;
+		n++;
+	}
+	return resultado;
 }
 
 int cosseno(int angulo) {
@@ -170,134 +170,134 @@ int cosseno(int angulo) {
 }
 
 bool TryParse(char n, int *result) {
-    if (n >= '0' && n <= '9') {
-        char str[2] = {n, '\0'};
-        *result = atoi(str);
-        return true;
-    }
-    return false;
+	if (n >= '0' && n <= '9') {
+		char str[2] = {n, '\0'};
+		*result = atoi(str);
+		return true;
+	}
+	return false;
 }
 
 
 //arquivo Natanael, resolvendo RPN
 double resolveRPN(char *expressao) {
-    //char input[100];
-    char input_copy[100];
-    char *token;
-    double num1, num2, result;
-
-    Pilha *prato = criar_pilha();
-
-    // Copia a expressão para uma cópia mutável, pois strtok modifica a string.
-    // Garanta que input_copy tenha espaço suficiente.
-    if (strlen(expressao) >= sizeof(input_copy)) {
-        printf("Erro: Expressao muito longa!\n");
-        liberarPilha2(prato);
-        return NAN;
-    }
-    strcpy(input_copy, expressao);
-
-    token = strtok(input_copy, " ");
-    //printf("tamanho da copia: %d.\n", strlen(input));
-    //while(tamanhoPilha(prato) != 1) {
-    while (token) {
-        char *fim;
-        double val = strtod(token, &fim);
-        if (*fim == '\0') {
-            empilhar(prato, val); //atof(token) parsing desnecessário visto que strtod já converte
-            printf("Empilhando o valor %.2f\n", val);
-        }
-        /*if (isdigit(token[0])) {
-            empilhar(prato, atof(token));
-        }*/
-        else {
-            char operacoesSimples[5] = {'+', '-', '*', '/', '^'};
-            bool operacao_binaria = false;
-            for (int i = 0; i < 5; i++) {
-                if (token[0] == operacoesSimples[i] && token[1] == '\0') {
-                    // token[1] == '\0' garante que o token tem só 1 caractere, tipo "+"
-                    operacao_binaria = true;
-                    break;
-                }
-            }
-            if (operacao_binaria) {
-                //printf("DEBUG: Tamanho da pilha antes de desempilhar: %d\n", prato->tamanho);
-                num1 = desempilhar(prato);
-                //printf("DEBUG: Tamanho da pilha depois do primeiro desempilhar: %d\n", prato->tamanho);
-                num2 = desempilhar(prato);
-                //printf("DEBUG: Tamanho da pilha depois do segundo desempilhar: %d\n", prato->tamanho);
-
-                switch ((char) token[0]) {
-                    case '+':
-                        result = num2 + num1;
-                        printf(" %.2f + %.2f = %.2f\n", num2, num1, result);
-                        break;
-                    case '-':
-                        result = num2 - num1;
-                        printf(" %.2f - %.2f = %.2f\n", num2, num1, result);
-                        break;
-                    case '*':
-                        result = num2 * num1;
-                        printf(" %.2f * %.2f = %.2f\n", num2, num1, result);
-                        break;
-                    case '/':
-                        if (num1 == 0) {
-                            printf("Erro: Divisao por zero!\n");
-                            //destruir_pilha(prato);
-                            return NAN; // Retorna NAN para erro
-                        }
-                        result = num2 / num1;
-                        printf(" %.2f / %.2f = %.2f\n", num2, num1, result);
-                        break;
-                    case '^': //potenciação
-                        result = pow(num2, num1);
-                        printf(" %.2f ^ %.2f = %.2f\n", num2, num1, result);
-                        break;
-                }
-                empilhar(prato, result);
-            } else {
-                double unico = desempilhar(prato);
-                if (strcmp(token, "cos") == 0) {
+	//char input[100];
+	char input_copy[100];
+	char *token;
+	double num1, num2, result;
+	
+	Pilha *prato = criar_pilha();
+	
+	// Copia a expressão para uma cópia mutável, pois strtok modifica a string.
+	// Garanta que input_copy tenha espaço suficiente.
+	if (strlen(expressao) >= sizeof(input_copy)) {
+		printf("Erro: Expressao muito longa!\n");
+		liberarPilha2(prato);
+		return NAN;
+	}
+	strcpy(input_copy, expressao);
+	
+	token = strtok(input_copy, " ");
+	//printf("tamanho da copia: %d.\n", strlen(input));
+	//while(tamanhoPilha(prato) != 1) {
+	while (token) {
+		char *fim;
+		double val = strtod(token, &fim);
+		if (*fim == '\0') {
+			empilhar(prato, val); //atof(token) parsing desnecessário visto que strtod já converte
+			printf("Empilhando o valor %.2f\n", val);
+		}
+		/*if (isdigit(token[0])) {
+		empilhar(prato, atof(token));
+		}*/
+		else {
+			char operacoesSimples[5] = {'+', '-', '*', '/', '^'};
+			bool operacao_binaria = false;
+			for (int i = 0; i < 5; i++) {
+				if (token[0] == operacoesSimples[i] && token[1] == '\0') {
+					// token[1] == '\0' garante que o token tem só 1 caractere, tipo "+"
+					operacao_binaria = true;
+					break;
+				}
+			}
+			if (operacao_binaria) {
+				//printf("DEBUG: Tamanho da pilha antes de desempilhar: %d\n", prato->tamanho);
+				num1 = desempilhar(prato);
+				//printf("DEBUG: Tamanho da pilha depois do primeiro desempilhar: %d\n", prato->tamanho);
+				num2 = desempilhar(prato);
+				//printf("DEBUG: Tamanho da pilha depois do segundo desempilhar: %d\n", prato->tamanho);
+				
+				switch ((char) token[0]) {
+				case '+':
+					result = num2 + num1;
+					printf(" %.2f + %.2f = %.2f\n", num2, num1, result);
+					break;
+				case '-':
+					result = num2 - num1;
+					printf(" %.2f - %.2f = %.2f\n", num2, num1, result);
+					break;
+				case '*':
+					result = num2 * num1;
+					printf(" %.2f * %.2f = %.2f\n", num2, num1, result);
+					break;
+				case '/':
+					if (num1 == 0) {
+						printf("Erro: Divisao por zero!\n");
+						//destruir_pilha(prato);
+						return NAN; // Retorna NAN para erro
+					}
+					result = num2 / num1;
+					printf(" %.2f / %.2f = %.2f\n", num2, num1, result);
+					break;
+					case '^': //potenciação
+					result = pow(num2, num1);
+					printf(" %.2f ^ %.2f = %.2f\n", num2, num1, result);
+					break;
+				}
+				empilhar(prato, result);
+			} else {
+				double unico = desempilhar(prato);
+				if (strcmp(token, "cos") == 0) {
 					//converte pra radianos antes de calcular
 					result = cos(unico * PI / 180.0);
-                    printf(" cos(%.2f) = %.2f\n", unico, result);
-                } else if (strcmp(token, "sen") == 0) {
+					printf(" cos(%.2f) = %.2f\n", unico, result);
+				} else if (strcmp(token, "sen") == 0) {
 					//converte pra radianos antes de calcular
 					result = sin(unico * PI / 180.0);
-                    //result = sin(unico);
-                    printf(" sin(%.2f) = %.2f\n", unico, result);
-                } else if (strcmp(token, "log") == 0) {
-                    if (unico <= 0) {
-                        printf("Erro: Log de número <= 0!\n");
-                        return NAN;
-                    }
-                    result = log10(unico); // log na base 10
-                    printf(" log(%.2f) = %.2f\n", unico, result);
-                } else if (strcmp(token, "sqrt") == 0) {
-                    if (unico < 0) {
-                        printf("Erro: Raiz de número negativo!\n");
-                        return NAN;
-                    }
-                    result = sqrt(unico);
-                    printf(" sqrt(%.2f) = %.2f\n", unico, result);
-                } else {
-                    printf("Erro: Funcao desconhecida '%s'\n", token);
-                    return NAN;
-                }
-            }
-            //printf("DEBUG: Resultado da operacao %g %c %g = %g\n", num2, token[0], num1, result);
-            // Opcional para depuração
-            printf("Resultado empilhado:\t%.2f\n", result);
-            empilhar(prato, result);
-        }
-
-
-        token = strtok(NULL, " ");
-    }
-    printf("Operacao:\t%s\nResultado:\t %.2f.", expressao, consultarTopo(prato));
-    //}
-    double finalResult = consultarTopo(prato);
-    return finalResult;
+					//result = sin(unico);
+					printf(" sin(%.2f) = %.2f\n", unico, result);
+				} else if (strcmp(token, "log") == 0) {
+					if (unico <= 0) {
+						printf("Erro: Log de número <= 0!\n");
+						return NAN;
+					}
+					result = log10(unico); // log na base 10
+					printf(" log(%.2f) = %.2f\n", unico, result);
+				} else if (strcmp(token, "sqrt") == 0) {
+					if (unico < 0) {
+						printf("Erro: Raiz de número negativo!\n");
+						return NAN;
+					}
+					result = sqrt(unico);
+					printf(" sqrt(%.2f) = %.2f\n", unico, result);
+				} else {
+					printf("Erro: Funcao desconhecida '%s'\n", token);
+					return NAN;
+				}
+			}
+			//printf("DEBUG: Resultado da operacao %g %c %g = %g\n", num2, token[0], num1, result);
+			// Opcional para depuração
+			printf("Resultado empilhado:\t%.2f\n", result);
+			empilhar(prato, result);
+		}
+		
+		
+		token = strtok(NULL, " ");
+	}
+	printf("Operacao:\t%s\nResultado:\t %.2f.", expressao, consultarTopo(prato));
+	//}
+	double finalResult = consultarTopo(prato);
+	return finalResult;
 }
 
 //converte de infixa pra pos
@@ -399,103 +399,115 @@ char *lerExpressaoDinamica() {
 	return expressao; // Retorna a string lida
 }
 
-char *recebe_infixa() {
-	char *expressaoInfixa = lerExpressaoDinamica(); // Lê a expressão fornecida
+char* recebe_infixa() {
+	//declara pilha string de operadores e inicializa
+	PilhaStr operadores;
+	operadores.topo = -1;
 	
-	// Aloca espaço para a expressão pós-fixa dobro do tamanho da infixa por segurança, foi do jeito que deu porque parenteses dá problema
-	//char *expressaoPosfixa = malloc(strlen(expressaoInfixa) * 2 + 1);
-	char *expressaoPosfixa = calloc(strlen(expressaoInfixa) * 4 + 1, sizeof(char)); // + espaço extra por segurança
-	int indiceSaida = 0; //int indiceEntrada, indiceSaida = 0;
+	char *saida[100];
+	int saida_indice = 0;
 	
-	// Inicializa a pilha de operadores (/*-+. etc)
-	PilhaCar pilhaOperadores;
-	inicializarPilha(&pilhaOperadores);
+	const char* delimitadores = " "; //const char* delimitadores = " ()";
+	//lê a expressão
+	char *expressao = lerExpressaoDinamica();
+	char copia[300];
+	//cria uma cópia pra usar na strtok()
+	strcpy(copia, expressao);
+	free(expressao);
+	//bem aqui
+	char *token = strtok(copia, delimitadores);
 	
-	int i = 0;
-	while (expressaoInfixa[i] != '\0') {
-		char c = expressaoInfixa[i];
+	while (token != NULL) {
+		char *fim;
+		double numero = strtod(token, &fim);
 		
-		// Ignora espaços
-		if (c == ' ') {
-			i++;
-			continue;
+		if (*fim == '\0') {
+			// É número → vai pra saída
+			saida[saida_indice++] = strdup(token);
 		}
-		
-		//Detecta números, inclusive negativos e com ponto decimal troquei "strtol"  "strtod()"
-		if ((c >= '0' && c <= '9') || (c == '-' && (i == 0 || expressaoInfixa[i - 1] == '(' || expressaoInfixa[i - 1] == '+' || expressaoInfixa[i - 1] == '-' || expressaoInfixa[i - 1] == '*' || expressaoInfixa[i - 1] == '/' || expressaoInfixa[i - 1] == '^'))) {
-			char *endPtr;
-			
-			//converte o valor da string para valor double
-			double valor = strtod(&expressaoInfixa[i], &endPtr);
-			
-			char buffer[64];
-			sprintf(buffer, "%g ", valor); // %g evita zeros desnecessários (ex: 2.500000 ? 2.5)
-			strcat(expressaoPosfixa, buffer);
-			indiceSaida = strlen(expressaoPosfixa);
-			
-			i = endPtr - expressaoInfixa;
+		else if (
+			strcmp(token, "sen") == 0 ||
+			strcmp(token, "cos") == 0 ||
+			strcmp(token, "log") == 0 ||
+			strcmp(token, "sqrt") == 0
+			) {
+			// empilha operadores unários
+			empilharString(&operadores, token);
 		}
-		
-		//Identifica Letra
-		else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
-			expressaoPosfixa[indiceSaida++] = c;
-			expressaoPosfixa[indiceSaida++] = ' '; // separador
-			i++;
+		else if (strcmp(token, "(") == 0) {
+			//empilha parêntese de abertura
+			empilharString(&operadores, token);
 		}
-		
-		//Identifica Parêntese de abertura
-		else if (c == '(') {
-			empilharCaractere(&pilhaOperadores, c);
-			i++;
-		}
-		
-		//Identifica Parêntese de fechamento
-		else if (c == ')') {
-			while (pilhaOperadores.indiceTopo != -1 &&
-				pilhaOperadores.dados[pilhaOperadores.indiceTopo] != '(') {
-				expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
-				expressaoPosfixa[indiceSaida++] = ' '; // separador
+		else if (strcmp(token, ")") == 0) {
+			// Fecha parêntese: desempilha até achar '(' caso ache um parêntese de fechamento
+			while (operadores.topo >= 0 && strcmp(operadores.string[operadores.topo], "(") != 0) {
+				saida[saida_indice++] = desempilharString(&operadores);
 			}
-			desempilharCaractere(&pilhaOperadores); // Remove o '('
-			i++;
-		}
-		
-		//Identifica os numeros
-		else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^') {
-			while (pilhaOperadores.indiceTopo != -1 &&
-				obterPrioridade(pilhaOperadores.dados[pilhaOperadores.indiceTopo]) >= obterPrioridade(c)) {
-				expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
-				expressaoPosfixa[indiceSaida++] = ' '; // separador
+			
+			// Remove o parêntese esquerdo "("
+			if (operadores.topo >= 0 && strcmp(operadores.string[operadores.topo], "(") == 0) {
+				free(desempilharString(&operadores));
 			}
-			empilharCaractere(&pilhaOperadores, c);
-			i++;
+			
+			// Se tiver função no topo agora, também desempilha pra saída
+			if (operadores.topo >= 0) {
+				char *top = operadores.string[operadores.topo];
+				if (
+					strcmp(top, "sen") == 0 ||
+					strcmp(top, "cos") == 0 ||
+					strcmp(top, "log") == 0 ||
+					strcmp(top, "sqrt") == 0
+					) {
+					saida[saida_indice++] = desempilharString(&operadores);
+				}
+			}
+		}
+		else if (strlen(token) == 1 && strchr("+-*/^", token[0])) {
+			while (operadores.topo >= 0) {
+				char *top = operadores.string[operadores.topo];
+				if (strlen(top) == 1 && obterPrioridade(top[0]) >= obterPrioridade(token[0])) {
+					saida[saida_indice++] = desempilharString(&operadores);
+				} else {
+					break;
+				}
+			}
+			empilharString(&operadores, token);
+		}
+		// senão: ignora token desconhecido
+		
+		token = strtok(NULL, delimitadores);
+	}
+	
+	// desempilha qualquer coisa restante
+	while (operadores.topo >= 0) {
+		char *top = desempilharString(&operadores);
+		if (strcmp(top, "(") != 0 && strcmp(top, ")") != 0) {
+			saida[saida_indice++] = top;
 		} else {
-			i++; // Caracteres inválidos são ignorados
+			free(top); // ignora parêntese
 		}
 	}
 	
-	
-	// Após o fim da expressão, desempilha tudo que restou
-	while (pilhaOperadores.indiceTopo != -1) {
-		expressaoPosfixa[indiceSaida++] = desempilharCaractere(&pilhaOperadores);
-		expressaoPosfixa[indiceSaida++] = ' '; //acrescentando os espaços após cada elemento para delimitar a parte
+	// Junta a saída em uma string única
+	size_t total = 0;
+	for (int i = 0; i < saida_indice; i++) {
+		total += strlen(saida[i]) + 1;
 	}
 	
-	expressaoPosfixa[indiceSaida] = '\0'; // Termina a string com zero
+	char *resultado = malloc(total + 1);
+	if (!resultado) {
+		fprintf(stderr, "Erro de alocação.\n");
+		exit(EXIT_FAILURE);
+	}
 	
-	// Imprime a expressão original e a convertida
-	printf("Expressao Infixa: ");
-	imprimirExpressao(expressaoInfixa);
+	resultado[0] = '\0';
+	for (int i = 0; i < saida_indice; i++) {
+		strcat(resultado, saida[i]);
+		strcat(resultado, " ");
+		free(saida[i]); // limpa strdup
+	}
 	
-	printf("Expressao Posfixa: ");
-	imprimirExpressao(expressaoPosfixa);
-	
-	// Libera memória alocada
-	liberarPilha(&pilhaOperadores);
-	free(expressaoInfixa);
-	//free(expressaoPosfixa);
-	
-	return expressaoPosfixa; //retornando a expressão corrigida para então usar na resolução da expressão que fiz
+	return resultado;
 }
 
 //recebe expressão pós-fixada e devolve expressão infixada
